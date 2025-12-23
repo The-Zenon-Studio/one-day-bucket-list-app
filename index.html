@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>The Day - Bucket List</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -41,6 +41,27 @@
         /* Smooth animation for checklist */
         .check-anim {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Mobile keyboard handling */
+        html, body {
+            height: 100%;
+            position: fixed;
+            width: 100%;
+            overflow: hidden;
+        }
+        body {
+            display: flex;
+        }
+        /* Modal adjustments for mobile keyboard */
+        #modal-content {
+            max-height: 85dvh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        @media (max-width: 640px) {
+            #modal-content {
+                max-height: calc(100dvh - 60px);
+            }
         }
     </style>
 </head>
@@ -87,26 +108,26 @@
         </div>
 
         <div id="modal" class="absolute inset-0 bg-black/20 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300 flex items-end">
-            <div class="bg-white w-full h-[68%] sm:h-[70%] rounded-t-[40px] p-6 sm:p-8 flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.1)] transform translate-y-full transition-transform duration-300" id="modal-content">
+            <div class="bg-white w-full rounded-t-[40px] p-6 sm:p-8 flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.1)] transform translate-y-full transition-transform duration-300" id="modal-content">
                 
                 <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-8"></div>
 
                 <h3 class="text-xl sm:text-2xl font-bold text-textDark mb-6">Add to Bucket List</h3>
 
-                <p class="text-sm font-bold text-gray-400 mb-3">Choose Icon</p>
-                <div class="flex gap-4 mb-6 overflow-x-auto pb-2 hide-scrollbar">
-                    <button class="icon-btn h-12 w-12 rounded-2xl bg-orange-100 text-softOrange flex-shrink-0 flex items-center justify-center border-2 border-transparent hover:border-softOrange transition" onclick="selectIcon('plane')"><i class="fas fa-plane"></i></button>
-                    <button class="icon-btn h-12 w-12 rounded-2xl bg-blue-100 text-blue-400 flex-shrink-0 flex items-center justify-center border-2 border-transparent hover:border-blue-400 transition" onclick="selectIcon('music')"><i class="fas fa-music"></i></button>
-                    <button class="icon-btn h-12 w-12 rounded-2xl bg-green-100 text-green-500 flex-shrink-0 flex items-center justify-center border-2 border-transparent hover:border-green-500 transition" onclick="selectIcon('mountain')"><i class="fas fa-mountain"></i></button>
-                    <button class="icon-btn h-12 w-12 rounded-2xl bg-purple-100 text-purple-400 flex-shrink-0 flex items-center justify-center border-2 border-transparent hover:border-purple-400 transition" onclick="selectIcon('camera')"><i class="fas fa-camera"></i></button>
-                </div>
+                <div class="flex-1 overflow-y-auto -mx-6 sm:-mx-8 px-6 sm:px-8 mb-4 hide-scrollbar">
+                    <p class="text-sm font-bold text-gray-400 mb-3">Choose Icon</p>
+                    <div class="flex gap-4 mb-6 overflow-x-auto pb-2 hide-scrollbar">
+                        <button class="icon-btn h-12 w-12 rounded-2xl bg-orange-100 text-softOrange flex-shrink-0 flex items-center justify-center border-2 border-transparent hover:border-softOrange transition" onclick="selectIcon('plane')"><i class="fas fa-plane"></i></button>
+                        <button class="icon-btn h-12 w-12 rounded-2xl bg-blue-100 text-blue-400 flex-shrink-0 flex items-center justify-center border-2 border-transparent hover:border-blue-400 transition" onclick="selectIcon('music')"><i class="fas fa-music"></i></button>
+                        <button class="icon-btn h-12 w-12 rounded-2xl bg-green-100 text-green-500 flex-shrink-0 flex items-center justify-center border-2 border-transparent hover:border-green-500 transition" onclick="selectIcon('mountain')"><i class="fas fa-mountain"></i></button>
+                        <button class="icon-btn h-12 w-12 rounded-2xl bg-purple-100 text-purple-400 flex-shrink-0 flex items-center justify-center border-2 border-transparent hover:border-purple-400 transition" onclick="selectIcon('camera')"><i class="fas fa-camera"></i></button>
+                    </div>
 
-                <div class="mb-6">
-                    <label class="block text-sm font-bold text-gray-400 mb-2">Dream Name</label>
-                    <input type="text" id="dream-input" placeholder="e.g. Visit Japan..." class="w-full bg-gray-50 text-textDark font-medium rounded-2xl p-4 focus:outline-none focus:ring-2 focus:ring-teal/50 transition">
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-400 mb-2">Dream Name</label>
+                        <input type="text" id="dream-input" placeholder="e.g. Visit Japan..." class="w-full bg-gray-50 text-textDark font-medium rounded-2xl p-4 focus:outline-none focus:ring-2 focus:ring-teal/50 transition">
+                    </div>
                 </div>
-
-                <div class="flex-1"></div>
 
                 <button onclick="addItem()" class="bg-teal text-white font-bold text-lg py-4 rounded-2xl w-full mb-3 shadow-lg shadow-teal/30 active:scale-95 transition">Add Schedule</button>
                 <button onclick="closeModal()" class="text-gray-400 font-bold py-3 w-full">Cancel</button>
@@ -137,6 +158,13 @@
                 modalContent.classList.remove('translate-y-full');
             }, 10);
             dreamInput.focus();
+            // Scroll icons into view on mobile when keyboard appears
+            setTimeout(() => {
+                const iconSection = document.querySelector('.flex.gap-4.mb-6');
+                if (iconSection) {
+                    iconSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 500);
         }
 
         function closeModal() {
