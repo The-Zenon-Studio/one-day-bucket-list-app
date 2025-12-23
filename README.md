@@ -57,7 +57,7 @@ This allows the app to be installed and used like a native Android application.
 Lightweight • Offline Ready • No Login Required
 
 🔗 **APK Download Link:**  
-[Download One Day APK](https://your-download-link-here.com/one-day.apk)
+[Download One Day APK](https://github.com/The-Zenon-Studio/one-day-bucket-list-app/releases/download/v1.0.0/One.Day.v1.0.0.apk)
 
 *(APK provided via web wrapper conversion)*
 
